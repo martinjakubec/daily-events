@@ -32,8 +32,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public', 'dist')));
 
 const eventRouter = require('./routers/eventRouter');
+const userRouter = require('./routers/userRouter');
 
 app.use('/events', eventRouter);
+app.use(userRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
