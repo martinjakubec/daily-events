@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const EventModel = require('../models/EventModel');
 
 router.get('/:customId', async (req, res, next) => {
