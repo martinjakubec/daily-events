@@ -17,7 +17,6 @@ router.post('/add', async (req, res, next) => {
   const {title, text, token} = req.body;
   if (jwt.verify(token, JWT_SECRET)) {
     const {username, role} = jwt.decode(token);
-    console.log(jwt.decode(token));
     if (rolesAbleToAdd.includes(role)) {
       const lastEvent = await EventModel.find()
         .sort({customId: -1})
@@ -60,7 +59,6 @@ router.post('/delete/:customId', async (req, res, next) => {
 router.post('/edit/:customId', async (req, res, next) => {
   const customId = req.params.customId;
   const body = req.body;
-  console.log(body);
   try {
     await EventModel.updateOne({customId}, body);
     return res.json({status: 'ok', data: 'Evant updated successfully.'});
