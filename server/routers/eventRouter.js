@@ -7,10 +7,21 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const rolesAbleToApprove = ['admin'];
 const rolesAbleToAdd = ['admin', 'editor'];
 
+// router.get
+
 router.get('/:customId', async (req, res, next) => {
-  const customId = req.params.customId;
-  const theEvent = await EventModel.findOne({customId});
-  res.json({status: 'ok', data: theEvent});
+  try {
+    const customId = req.params.customId;
+    const theEvent = await EventModel.findOne({customId});
+    if (theEvent !== null) {
+      return res.json({status: 'ok', data: theEvent});
+    } else {
+      return res.json({status: 'error', error: `Event with ID ${customId} does not exist.`})
+    }
+
+  } catch(err) {
+    return res.json({status: 'error', error: 'Error fetching event from database.'})
+  }
 });
 
 router.post('/add', async (req, res, next) => {
