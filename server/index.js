@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const cors = require('cors')
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const SALT_ROUNDS = process.env.SALT_ROUNDS;
@@ -22,8 +23,7 @@ mongoose.connect(
 
 const app = express();
 app.use(helmet());
-
-
+app.use(cors());
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
