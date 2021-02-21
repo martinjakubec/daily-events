@@ -5,9 +5,11 @@ const EventSchema = new mongoose.Schema(
     customId: {type: Number, unique: true},
     title: {type: String},
     text: {type: String},
-    date: {type: Date},
+    dateAdded: {type: Date},
+    dateToBeShown: {type: String, unique: true},
     author: {type: String},
-    hasBeenApproved: {type: Boolean}
+    hasBeenApproved: {type: Boolean},
+    hasBeenGloballyShown: {type: Boolean}
   },
   {collection: 'events'}
 );

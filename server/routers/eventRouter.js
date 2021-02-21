@@ -1,13 +1,44 @@
 const express = require('express');
 const router = express.Router();
 const EventModel = require('../models/EventModel');
+const UserModel = require('../models/UserModel');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const rolesAbleToApprove = ['admin'];
 const rolesAbleToAdd = ['admin', 'editor'];
 
-// router.get
+(resetEventsShown = async () => {
+  await EventModel.updateMany({}, {$set: {hasBeenGloballyShown: false}})
+})()
+
+// these two are outside in order to be static (since no static in JS)
+let todayEvent = undefined;
+let todayDate = new Date().toDateString();
+
+router.get('/daily', async (req, res, next) => {
+  if (todayEvent && (todayDate === new Date().toDateString())) {
+    return res.json({status: 'ok', data: todayEvent});
+  } else {
+    todayDate = new Date().toDateString();
+    try {
+      let newEvent = await EventModel.findOne({dateToBeShown: todayDate, hasBeenApproved: true, hasBeenGloballyShown: false});
+      if (newEvent) {
+        todayEvent = newEvent;
+        await EventModel.updateOne({customId: todayEvent.customId}, {hasBeenGloballyShown: true});
+      } else {
+        newEvent = await EventModel.findOne({dateToBeShown: null, hasBeenApproved: true, hasBeenGloballyShown: false})
+        todayEvent = newEvent;
+        await EventModel.updateOne({customId: todayEvent.customId}, {hasBeenGloballyShown: true});
+      }
+    } catch(err) {
+      console.log(err);
+      return res.json({status: 'error', error: 'Event could not be fetched.'})
+    }
+    return res.json({status: 'ok', data: todayEvent})
+  }
+  return res.json('fk this shit');
+});
 
 router.get('/:customId', async (req, res, next) => {
   try {
@@ -16,16 +47,21 @@ router.get('/:customId', async (req, res, next) => {
     if (theEvent !== null) {
       return res.json({status: 'ok', data: theEvent});
     } else {
-      return res.json({status: 'error', error: `Event with ID ${customId} does not exist.`})
+      return res.json({
+        status: 'error',
+        error: `Event with ID ${customId} does not exist.`,
+      });
     }
-
-  } catch(err) {
-    return res.json({status: 'error', error: 'Error fetching event from database.'})
+  } catch (err) {
+    return res.json({
+      status: 'error',
+      error: 'Error fetching event from database.',
+    });
   }
 });
 
 router.post('/add', async (req, res, next) => {
-  const {title, text, token} = req.body;
+  const {title, text, dateToBeShown, token} = req.body;
   if (jwt.verify(token, JWT_SECRET)) {
     const {username, role} = jwt.decode(token);
     if (rolesAbleToAdd.includes(role)) {
@@ -39,20 +75,30 @@ router.post('/add', async (req, res, next) => {
           customId: customId,
           title: title,
           text: text,
-          date: new Date(),
+          dateAdded: new Date(),
+          dateToBeShown: dateToBeShown,
           author: username,
           hasBeenApproved: false,
         });
         return res.json({status: 'ok', data: 'Event created successfully.'});
       } catch (err) {
         console.log(err);
-        return res.json({status: 'error', error: 'Something went wrong. Please, try again later.'});
+        return res.json({
+          status: 'error',
+          error: 'Something went wrong. Please, try again later.',
+        });
       }
     } else {
-      return res.json({status: 'error', error: 'You are not authorized to add an event.'})
+      return res.json({
+        status: 'error',
+        error: 'You are not authorized to add an event.',
+      });
     }
   } else {
-    return res.json({status: 'error', error: 'It seems your JWT is corrupted.'})
+    return res.json({
+      status: 'error',
+      error: 'It seems your JWT is corrupted.',
+    });
   }
 });
 
