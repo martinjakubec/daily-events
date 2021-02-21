@@ -121,11 +121,17 @@ router.post('/validateToken', async (req, res, next) => {
     } else {
     }
   } catch (err) {
+    if (err.message === 'jwt expired') {
+      return res.json({
+        status: 'error',
+        error: 'Your token is invalid, please, login again.',
+      });
+    } 
     console.log(JSON.stringify(err));
     return res.json({
       status: 'error',
-      error: 'Your token is invalid, please, login again.',
-    });
+      error: 'Your token could not be validated.'
+    })
   }
 });
 
