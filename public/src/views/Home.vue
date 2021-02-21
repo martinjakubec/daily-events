@@ -2,6 +2,7 @@
   <div>
     <base-event v-if="eventToShow" :eventToShow="eventToShow"></base-event>
     <base-error v-if="errorMessage" :errorMessage="errorMessage" @closeError="errorMessage=null"></base-error>
+    
   </div>
 </template>
 
@@ -24,13 +25,13 @@ export default {
   },
   methods: {
     async fetchEvent() {
-      let eventNumber;
-      if(this.isUserLoggedIn) {
-        eventNumber = 14;
-      } else {
-        eventNumber = 2
-      }
-      const fetchedEvent = await fetch(process.env.VUE_APP_API_BASE_URL + `events/${eventNumber}`, {
+      // let eventNumber;
+      // if(this.isUserLoggedIn) {
+      //   eventNumber = 14;
+      // } else {
+      //   eventNumber = 2
+      // }
+      const fetchedEvent = await fetch(process.env.VUE_APP_API_BASE_URL + `events/daily`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

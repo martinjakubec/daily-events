@@ -14,17 +14,17 @@ export default {
 
 <style scoped lang="scss">
 form {
-  /deep/ input {
+  ::v-deep(input) {
     margin-bottom: 20px;
     display: block;
   }
-  /deep/ input[type='text'],
-  /deep/ input[type='number'],
-  /deep/ input[type='password'],
-  /deep/ input[type='search'],
-  /deep/ input[type='tel'],
-  /deep/ input[type='url'],
-  /deep/ input[type='email'] {
+  ::v-deep(input[type='text']),
+  ::v-deep(input[type='number']),
+  ::v-deep(input[type='password']),
+  ::v-deep(input[type='search']),
+  ::v-deep(input[type='tel']),
+  ::v-deep(input[type='url']),
+  ::v-deep(input[type='email']) {
     display: block;
     min-width: 300px;
     height: 30px;
@@ -34,11 +34,11 @@ form {
     position: relative;
   }
 
-  /deep/ button,
-  /deep/ input[type='button'],
-  /deep/ input[type='reset'],
-  /deep/ input[type='file'],
-  /deep/ input[type='submit'] {
+  ::v-deep(button),
+  ::v-deep(input[type='button']),
+  ::v-deep(input[type='reset']),
+  ::v-deep(input[type='file']),
+  ::v-deep(input[type='submit']) {
     display: block;
     height: 50px;
     width: 150px;

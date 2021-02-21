@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h2>Login {{ randomProp }}</h2>
+    <h2>Login</h2>
     <base-form @submit="$emit('userLogin', $event)">
       <label for="username">Username:</label>
       <input type="text" name="username" />
@@ -16,7 +16,6 @@ import BaseForm from '../components/BaseForm.vue';
 export default {
   components: {BaseForm},
   props: {
-    randomProp: String
   },
 };
 </script>
