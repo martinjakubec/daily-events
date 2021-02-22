@@ -79,6 +79,7 @@ router.post('/add', async (req, res, next) => {
           dateToBeShown: dateToBeShown,
           author: username,
           hasBeenApproved: false,
+          hasBeenGloballyShown: false
         });
         return res.json({status: 'ok', data: 'Event created successfully.'});
       } catch (err) {
