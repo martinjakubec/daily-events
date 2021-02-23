@@ -3,8 +3,6 @@ const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const cors = require('cors')
 
@@ -29,13 +27,14 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, '..', 'public', 'dist')));
 
 const eventRouter = require('./routers/eventRouter');
 const userRouter = require('./routers/userRouter');
 
-app.use('/events', eventRouter);
-app.use(userRouter);
+app.use('/api/events', eventRouter);
+app.use('/api/', userRouter);
+
+app.use(express.static(path.join(__dirname, '..', 'public', 'dist')));
 
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
