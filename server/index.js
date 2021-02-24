@@ -46,7 +46,7 @@ const userRouter = require('./routers/userRouter');
 app.use('/api/events', eventRouter);
 app.use('/api/', userRouter);
 
-app.get('/', (req, res, next) => {
+app.get('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'dist', 'index.html'));
 });
 
