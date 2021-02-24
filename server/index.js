@@ -10,6 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const SALT_ROUNDS = process.env.SALT_ROUNDS;
 const PORT = process.env.PORT;
 const DB_URL = process.env.DB_CONNECTION_URL;
+const MODE = process.env.MODE;
 
 mongoose.connect(
   DB_URL,
@@ -19,9 +20,15 @@ mongoose.connect(
   }
 );
 
+
+// apply control security policy headers according to environment
 const app = express();
-const helmetDirectives = require('./helmet-setup/directives');
-app.use(helmet(helmetDirectives));
+if (MODE === 'production') {
+  const helmetDirectives = require('./helmet-setup/directives');
+  app.use(helmet(helmetDirectives));
+} else if (MODE === 'dev') {
+  app.use(helmet());
+}
 app.use(cors());
 
 app.use(express.urlencoded({extended: false}));

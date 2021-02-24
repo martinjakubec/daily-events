@@ -1,11 +1,11 @@
 module.exports = {
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ['mjakubec.eu'],
-      objectSrc: ['mjakubec.eu'],
-      scriptSrc: ['mjakubec.eu'],
-      styleSrc: ['mjakubec.eu'],
-      fontSrc: ['mjakubec.eu'],
+      defaultSrc: ["'self'"],
+      objectSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'"],
+      fontSrc: ["'self'"],
       // baseUri: ['self'],
       // blockAllMixedContent: [],
       // frameAncestors: ['self'],
