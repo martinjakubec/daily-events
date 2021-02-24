@@ -18,7 +18,7 @@ router.get('/:username', async (req, res, next) => {
     }
 
     if (username === userData.username) {
-      if (jwt.verify(token, JWT_SECRET)) {
+      if (res.locals.isUserLoggedIn) {
         return res.json(userFromDb);
       } else {0
         return res.json({
@@ -113,7 +113,7 @@ router.post('/login', async (req, res, next) => {
 router.post('/validateToken', async (req, res, next) => {
   const {token} = req.body;
   try {
-    if (jwt.verify(token, JWT_SECRET)) {
+    if (res.locals.isUserLoggedIn) {
       return res.json({
         status: 'ok',
         data: 'Your token is validated, continue with using the site.',

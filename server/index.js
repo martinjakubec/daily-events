@@ -35,6 +35,9 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(cookieParser());
 
+const verifyUser = require('./middleware/verifyUser');
+app.use(verifyUser)
+
 app.use(express.static(path.join(__dirname, '..', 'public', 'dist')));
 
 const eventRouter = require('./routers/eventRouter');

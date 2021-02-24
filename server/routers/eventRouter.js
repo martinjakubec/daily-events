@@ -62,7 +62,7 @@ router.get('/:customId', async (req, res, next) => {
 
 router.post('/add', async (req, res, next) => {
   const {title, text, dateToBeShown, token} = req.body;
-  if (jwt.verify(token, JWT_SECRET)) {
+  if (res.locals.isUserLoggedIn) {
     const {username, role} = jwt.decode(token);
     if (rolesAbleToAdd.includes(role)) {
       const lastEvent = await EventModel.find()
@@ -132,7 +132,7 @@ router.post('/edit/:customId', async (req, res, next) => {
 router.post('/approve', async (req, res, next) => {
   const {eventToApprove, token} = req.body;
   // const [header, body, signature] = token.split('.');
-  if (jwt.verify(token, JWT_SECRET)) {
+  if (res.locals.isUserLoggedIn) {
     const {role} = jwt.decode(token);
     if (rolesAbleToApprove.includes(role)) {
       try {
