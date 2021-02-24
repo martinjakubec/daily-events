@@ -11,7 +11,10 @@ router.get('/:username', async (req, res, next) => {
   const userData = jwt.decode(token);
 
   try {
-    const userFromDb = await UserModel.findOne({username}, {password: 0, _id: 0, __v: 0});
+    const userFromDb = await UserModel.findOne(
+      {username},
+      {password: 0, _id: 0, __v: 0}
+    );
 
     if (userFromDb === null) {
       res.json({status: 'error', error: 'User does not exist'});
@@ -20,7 +23,8 @@ router.get('/:username', async (req, res, next) => {
     if (username === userData.username) {
       if (res.locals.isUserLoggedIn) {
         return res.json(userFromDb);
-      } else {0
+      } else {
+        0;
         return res.json({
           username: userFromDb.username,
           eventsCreated: userFromDb.eventsCreated,
@@ -111,27 +115,16 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.post('/validateToken', async (req, res, next) => {
-  const {token} = req.body;
-  try {
-    if (res.locals.isUserLoggedIn) {
-      return res.json({
-        status: 'ok',
-        data: 'Your token is validated, continue with using the site.',
-      });
-    } else {
-    }
-  } catch (err) {
-    if (err.message === 'jwt expired') {
-      return res.json({
-        status: 'error',
-        error: 'Your token is invalid, please, login again.',
-      });
-    } 
-    console.log(JSON.stringify(err));
+  if (res.locals.isUserLoggedIn) {
+    return res.json({
+      status: 'ok',
+      data: 'Your token is validated, continue with using the site.',
+    });
+  } else {
     return res.json({
       status: 'error',
-      error: 'Your token could not be validated.'
-    })
+      error: 'Your token is invalid, pelase, login again',
+    });
   }
 });
 

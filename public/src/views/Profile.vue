@@ -24,8 +24,6 @@ export default {
       activeComponent: 'profile-overview'
     };
   },
-  computed: {
-  },
   props: {
     isUserLoggedIn: Boolean,
     userData: Object,

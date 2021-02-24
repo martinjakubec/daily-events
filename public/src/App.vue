@@ -92,8 +92,25 @@ export default {
       localStorage.removeItem('token');
       this.$router.push('/login');
     },
-    async handleUserRegistration() {
-      console.log('User should be registered');
+    async handleUserRegistration(e) {
+      const username = e.target.username.value;
+      const password = e.target.password.value;
+      const mail = e.target.mailAddress.value;
+      const body = JSON.stringify({username, password, mail})
+      const userRegister = await fetch(process.env.VUE_APP_API_BASE_URL + '/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: body
+      });
+      const userRegisterResponse = await userRegister.json();
+      if (userRegisterResponse.status === 'ok') {
+        this.$router.push('/login');
+      } else {
+        this.errorMessage = userRegisterResponse.error;
+      }
     },
   },
   async created() {
