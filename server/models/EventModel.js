@@ -6,7 +6,7 @@ const EventSchema = new mongoose.Schema(
     title: {type: String},
     text: {type: String},
     dateAdded: {type: Date},
-    dateToBeShown: {type: String, unique: true},
+    dateToBeShown: {type: String},
     author: {type: String},
     hasBeenApproved: {type: Boolean},
     hasBeenGloballyShown: {type: Boolean}

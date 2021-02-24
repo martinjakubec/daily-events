@@ -8,13 +8,14 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const rolesAbleToApprove = ['admin'];
 const rolesAbleToAdd = ['admin', 'editor'];
 
-(resetEventsShown = async () => {
-  await EventModel.updateMany({}, {$set: {hasBeenGloballyShown: false}})
-})()
 
 // these two are outside in order to be static (since no static in JS)
 let todayEvent = undefined;
 let todayDate = new Date().toDateString();
+
+(resetEventsShown = async () => {
+  await EventModel.updateMany({}, {$set: {hasBeenGloballyShown: false, hasBeenApproved: true}})
+})()
 
 router.get('/daily', async (req, res, next) => {
   if (todayEvent && (todayDate === new Date().toDateString())) {
@@ -27,9 +28,13 @@ router.get('/daily', async (req, res, next) => {
         todayEvent = newEvent;
         await EventModel.updateOne({customId: todayEvent.customId}, {hasBeenGloballyShown: true});
       } else {
-        newEvent = await EventModel.findOne({dateToBeShown: null, hasBeenApproved: true, hasBeenGloballyShown: false})
-        todayEvent = newEvent;
-        await EventModel.updateOne({customId: todayEvent.customId}, {hasBeenGloballyShown: true});
+        newEvent = await EventModel.aggregate([{$match: {dateToBeShown: null, hasBeenApproved: true, hasBeenGloballyShown: false}}, {$sample: {size: 1}}]);
+        if(newEvent.length !== 0) {
+          todayEvent = newEvent[0];
+          await EventModel.updateOne({customId: todayEvent.customId}, {hasBeenGloballyShown: true});
+        } else {
+          return res.json({status: 'error', error: 'No event matching criteria can be found'})
+        }
       }
     } catch(err) {
       console.log(err);
@@ -63,6 +68,14 @@ router.get('/:customId', async (req, res, next) => {
 router.post('/add', async (req, res, next) => {
   const {title, text, dateToBeShown, token} = req.body;
   if (res.locals.isUserLoggedIn) {
+    try {
+      const eventWithSameDate = await EventModel.findOne({dateToBeShown});
+      if (eventWithSameDate) {
+        return res.json({status: 'error', error: 'Event with the same date already exists'})
+      }
+    } catch(err) {
+      console.log(err);
+    }
     const {username, role} = jwt.decode(token);
     if (rolesAbleToAdd.includes(role)) {
       const lastEvent = await EventModel.find()
