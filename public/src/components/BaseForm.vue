@@ -14,7 +14,8 @@ export default {
 
 <style scoped lang="scss">
 form {
-  ::v-deep(input) {
+  ::v-deep(input),
+  ::v-deep(textarea) {
     margin-bottom: 20px;
     display: block;
   }
@@ -32,6 +33,23 @@ form {
     border: none;
     box-sizing: border-box;
     position: relative;
+  }
+
+  ::v-deep(textarea) {
+    display: block;
+    width: 100%;
+    background-color: lighten($purple, 77%);
+    border: none;
+    box-sizing: border-box;
+    position: relative;
+    line-height: 1.5;
+    resize: vertical;
+    white-space: pre-wrap;
+  }
+
+  ::v-deep(input[type="date"]) {
+    border: none;
+    background-color: lighten($purple, 77%);
   }
 
   ::v-deep(button),
@@ -84,6 +102,13 @@ form {
         transition-duration: 0.2s;
       }
     }
+  }
+
+  ::v-deep(.note) {
+    font-size: 0.8rem;
+    color: #555;
+    font-style: italic;
+    margin: 5px 0 10px 0;
   }
 }
 </style>

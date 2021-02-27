@@ -17,6 +17,14 @@
 import BaseForm from '../components/BaseForm.vue';
 export default {
   components: {BaseForm},
+  props: {
+    isUserLoggedIn: Boolean
+  },
+  created() {
+    if (this.isUserLoggedIn) {
+      this.$router.push('/')
+    }
+  },
 };
 </script>
 

@@ -9,7 +9,8 @@
 export default {
   props: {
     errorMessage: String
-  }
+  },
+  emits: ['closeError']
 }
 </script>
 

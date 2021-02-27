@@ -42,6 +42,14 @@ const routes = [
     },
     component: () => import(/* webpackChunkName: "about" */ '../views/Logout.vue')
   },
+  {
+    path: '/add-event',
+    name: 'AddEvent',
+    meta: {
+      title: 'Add Event - Daily Events'
+    },
+    component: () => import(/* webpackChunkName: "about" */ '../views/AddEvent.vue')
+  },
 ];
 
 const router = createRouter({

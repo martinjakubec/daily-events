@@ -3,12 +3,14 @@
   <the-navbar
     @userLogout="handleUserLogout"
     :isUserLoggedIn="isUserLoggedIn"
+    :isUserAdmin="isUserAdmin"
     :username="username"
   />
   <router-view
     @userLogin="handleUserLogin"
     @userRegister="handleUserRegistration"
     :isUserLoggedIn="isUserLoggedIn"
+    :isUserAdmin="isUserAdmin"
     :userData="userData"
   />
   <base-error
@@ -39,6 +41,17 @@ export default {
         return '';
       }
     },
+    isUserAdmin() {
+      if (this.userData) {
+        if (this.userData.role === 'admin') {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
   },
   methods: {
     async fetchUserData(token, username) {
@@ -96,15 +109,18 @@ export default {
       const username = e.target.username.value;
       const password = e.target.password.value;
       const mail = e.target.mailAddress.value;
-      const body = JSON.stringify({username, password, mail})
-      const userRegister = await fetch(process.env.VUE_APP_API_BASE_URL + '/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: body
-      });
+      const body = JSON.stringify({username, password, mail});
+      const userRegister = await fetch(
+        process.env.VUE_APP_API_BASE_URL + '/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: body,
+        }
+      );
       const userRegisterResponse = await userRegister.json();
       if (userRegisterResponse.status === 'ok') {
         this.$router.push('/login');
@@ -114,10 +130,11 @@ export default {
     },
   },
   async created() {
+    console.log(this.userData);
     const token = localStorage.getItem('token');
     if (token) {
-      const [,payload] = token.split('.');
-      const username = JSON.parse(atob(payload)).username
+      const [, payload] = token.split('.');
+      const username = JSON.parse(atob(payload)).username;
       const verifyToken = await fetch(
         process.env.VUE_APP_API_BASE_URL + 'validateToken',
         {
@@ -132,7 +149,7 @@ export default {
       const verifyTokenResponse = await verifyToken.json();
       if (verifyTokenResponse.status === 'ok') {
         this.isUserLoggedIn = true;
-        this.fetchUserData(token, username)
+        this.fetchUserData(token, username);
       } else {
         this.errorMessage = verifyTokenResponse.error;
         this.handleUserLogout();

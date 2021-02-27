@@ -20,7 +20,7 @@ mongoose.connect(
   }
 );
 
-
+console.log(MODE);
 // apply control security policy headers according to environment
 const app = express();
 if (MODE === 'production') {
@@ -28,8 +28,10 @@ if (MODE === 'production') {
   app.use(helmet(helmetDirectives));
 } else if (MODE === 'dev') {
   app.use(helmet());
+} else {
 }
 app.use(cors());
+
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
